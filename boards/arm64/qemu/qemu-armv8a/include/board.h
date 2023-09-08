@@ -1,5 +1,5 @@
 /****************************************************************************
- * boards/arm/stm32/nucleo-f410rb/src/nucleo-f410rb.h
+ * boards/arm64/qemu/qemu-armv8a/include/board.h
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -18,80 +18,42 @@
  *
  ****************************************************************************/
 
-#ifndef __BOARDS_ARM_STM32_NUCLEO_F410RB_SRC_NUCLEO_F410RB_H
-#define __BOARDS_ARM_STM32_NUCLEO_F410RB_SRC_NUCLEO_F410RB_H
+#ifndef __BOARDS_ARM64_QEMU_QEMU_ARMV8A_INCLUDE_BOARD_H
+#define __BOARDS_ARM64_QEMU_QEMU_ARMV8A_INCLUDE_BOARD_H
 
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx/config.h>
-#include <nuttx/compiler.h>
-
-#include <stdint.h>
-
-#include "stm32.h"
 
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
 
-/* Configuration ************************************************************/
-
-/* LED.  User LD2: the green LED is a user LED connected to Arduino signal
- * D13 corresponding to MCU I/O PA5 (pin 21).
- *
- * - When the I/O is HIGH value, the LED is on.
- * - When the I/O is LOW, the LED is off.
- */
-
-#define GPIO_LD2 \
-  (GPIO_PORTA | GPIO_PIN5 | GPIO_OUTPUT_CLEAR | GPIO_OUTPUT | GPIO_PULLUP | \
-   GPIO_SPEED_50MHz)
-
-/* Buttons
- *
- * B1 USER: the user button is connected to the I/O PC13 (pin 2) of the STM32
- * microcontroller.
- */
-
-#define MIN_IRQBUTTON   BUTTON_USER
-#define MAX_IRQBUTTON   BUTTON_USER
-#define NUM_IRQBUTTONS  1
-
-#define GPIO_BTN_USER \
-  (GPIO_INPUT | GPIO_FLOAT | GPIO_EXTI | GPIO_PORTC | GPIO_PIN13)
-
 /****************************************************************************
- * Public Functions Definitions
+ * Public Data
  ****************************************************************************/
 
-/****************************************************************************
- * Name: stm32_bringup
- *
- * Description:
- *   Perform architecture-specific initialization
- *
- *   CONFIG_BOARD_LATE_INITIALIZE=y :
- *     Called from board_late_initialize().
- *
- *   CONFIG_BOARD_LATE_INITIALIZE=y && CONFIG_BOARDCTL=y :
- *     Called from the NSH library
- *
- ****************************************************************************/
+#ifndef __ASSEMBLY__
 
-int stm32_bringup(void);
-
-/****************************************************************************
- * Name: stm32_adc_setup
- *
- * Description:
- *   Initialize ADC and register the ADC driver.
- *
- ****************************************************************************/
-
-#ifdef CONFIG_ADC
-int stm32_adc_setup(void);
+#undef EXTERN
+#if defined(__cplusplus)
+#define EXTERN extern "C"
+extern "C"
+{
+#else
+#define EXTERN extern
 #endif
 
-#endif /* __BOARDS_ARM_STM32_NUCLEO_F410RB_SRC_NUCLEO_F410RB_H */
+/****************************************************************************
+ * Public Function Prototypes
+ ****************************************************************************/
+
+#undef EXTERN
+#if defined(__cplusplus)
+}
+#endif
+
+#endif /* __ASSEMBLY__ */
+#endif /* __BOARDS_ARM64_QEMU_QEMU_ARMV8A_INCLUDE_BOARD_H */
