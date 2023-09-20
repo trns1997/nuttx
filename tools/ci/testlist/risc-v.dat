@@ -1,2 +1,4 @@
-/risc-v
--,arty_a7:.+
+/risc-v/k210/maix-bit
+/risc-v/mpfs/icicle
+/risc-v/mpfs/m100pfsevp
+/risc-v/c906/smartl-c906
