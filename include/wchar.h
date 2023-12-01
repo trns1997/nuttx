@@ -57,6 +57,8 @@
  * Reference: Opengroup.org
  */
 
+#define _LIBCPP_WCHAR_H
+
 #define WEOF ((wint_t)-1)
 
 #define wcsftime_l(s, m, f, t, l)   wcsftime(s, m, f, t)
