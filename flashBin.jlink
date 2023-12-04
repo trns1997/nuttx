@@ -1,0 +1,3 @@
+loadfile /home/thomas.narayana-swamy/nuttxspace/nuttx/nuttx.bin 0x0C000000
+reset
+quit
