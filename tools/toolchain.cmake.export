@@ -19,8 +19,6 @@ set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES
     ${NUTTX_PATH}/include/${NUTTX_CXX} ${NUTTX_PATH}/include
     ${NUTTX_PATH}/arch/chip)
 
-file(GLOB STARTUP_OBJS ${NUTTX_PATH}/startup/*)
-
 add_compile_options(-nostdlib)
 add_compile_options(-ffunction-sections -fdata-sections)
 
