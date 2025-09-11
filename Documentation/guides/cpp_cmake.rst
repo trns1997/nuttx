@@ -34,11 +34,12 @@ Preparation
     .. code-block:: console
 
        $ cd nuttx
-       $ ./tools/configure.sh stm32f4discovery:nsh
+       $ ./tools/configure.sh -E -l stm32f4discovery:nsh
 
     In menuconfig, the main points to be changed on a typical NuttX configuration are the following:
 
     * RTOS Features -> Tasks and Scheduling -> Application entry point to 'hellocpp_main'
+    * Board Selection -> Board common logic -> to enable board common start up logic
     * Library Routines -> Have C++ compiler
     * Library Routines -> Have C++ initialization -> C++ Library -> Toolchain C++ support (you can also choose the basic version or the LLVM one)
     * Library Routines -> Have C++ initialization -> C++ Library -> C++ low level library select -> GNU low level libsupc++
@@ -65,9 +66,8 @@ Creating the project
        hellocpp/
        hellocpp/CMakeLists.txt
        hellocpp/nuttx-export-12.10.0/
-       hellocpp/src/CMakeLists.txt
+       hellocpp/include/HelloWorld.hpp
        hellocpp/src/main.cpp
-       hellocpp/src/HelloWorld.h
        hellocpp/src/HelloWorld.cpp
 
     The directory 'nuttx-export-12.10.0' is the unzipped content from the file created during
@@ -82,63 +82,45 @@ Creating the project
     cmake_minimum_required(VERSION 3.12...3.31)
 
     project(HelloCpp
-            VERSION 1.0
-            DESCRIPTION "Hello world C++ NuttX"
+        VERSION 1.0
+        DESCRIPTION "Hello world C++ NuttX"
     )
 
     set(CMAKE_CXX_STANDARD 17)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
-    
-    add_subdirectory(src)
 
-
-* hellocpp/src/CMakeLists.txt
-
-.. code-block:: cmake
-
+    # Use CMAKE_SOURCE_DIR for source files
     set(SOURCE_FILES
-            HelloWorld.cpp
-            main.cpp
+        ${CMAKE_SOURCE_DIR}/src/HelloWorld.cpp
+        ${CMAKE_SOURCE_DIR}/src/main.cpp
     )
 
-    add_executable(hello ${SOURCE_FILES})
+    set(EXE_NAME hello)
 
+    add_executable(${EXE_NAME} ${SOURCE_FILES})
+
+    # Add include directory so you can #include "..." from include/
+    target_include_directories(${EXE_NAME}
+            PRIVATE
+            ${CMAKE_SOURCE_DIR}/include
+    )
+
+    # Generate a .bin file from the ELF after build
     add_custom_command(
-            TARGET ${EXE_NAME}
-            POST_BUILD
-            COMMAND ${CMAKE_OBJCOPY} ARGS -S -O binary ${CMAKE_BINARY_DIR}/${EXE_NAME}.elf ${CMAKE_BINARY_DIR}/${EXE_NAME}.bin
+        TARGET ${EXE_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} -S -O binary
+                ${CMAKE_BINARY_DIR}/${EXE_NAME}
+                ${CMAKE_BINARY_DIR}/${EXE_NAME}.bin
+        COMMENT "Generating binary image ${EXE_NAME}.bin"
     )
 
 
-* hellocpp/src/main.cpp
+* hellocpp/include/HelloWorld.hpp
 
 .. code-block:: c++
 
-    #include <memory>
-
-    #include "HelloWorld.h"
-
-    extern "C"
-    {
-        int hellocpp_main(int, char*[])
-        {
-            auto pHelloWorld = std::make_shared<CHelloWorld>();
-            pHelloWorld->HelloWorld();
-
-            CHelloWorld helloWorld;
-            helloWorld.HelloWorld();
-
-            return 0;
-        }
-    }
-
-
-* hellocpp/src/HelloWorld.h
-
-.. code-block:: c++
-
-    #ifndef HELLOWORLD_H_
-    #define HELLOWORLD_H_
+    #pragma once
 
     class CHelloWorld
     {
@@ -152,7 +134,26 @@ Creating the project
         int mSecret;
     };
 
-    #endif
+
+* hellocpp/src/main.cpp
+
+.. code-block:: c++
+
+    #include <memory>
+
+    #include "HelloWorld.hpp"
+
+    int hellocpp_main(int, char*[])
+    {
+        auto pHelloWorld = std::make_shared<CHelloWorld>();
+        pHelloWorld->HelloWorld();
+
+        CHelloWorld helloWorld;
+        helloWorld.HelloWorld();
+
+        return 0;
+    }
+
 
 * hellocpp/src/HelloWorld.cpp
 
@@ -161,7 +162,7 @@ Creating the project
     #include <cstdio>
     #include <string>
 
-    #include "HelloWorld.h"
+    #include "HelloWorld.hpp"
 
     CHelloWorld::CHelloWorld()
     {
