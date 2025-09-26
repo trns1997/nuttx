@@ -120,6 +120,16 @@ int k64_bringup(void)
     }
 #endif
 
+#ifdef CONFIG_RGBLED
+  /* Configure and initialize the RGB LED. */
+
+  ret = k64_rgbled_setup();
+  if (ret < 0)
+    {
+      syslog(LOG_ERR, "ERROR: k64_rgbled_setup() failed: %d\n", ret);
+    }
+#endif
+
 #ifdef HAVE_AUTOMOUNTER
   /* Initialize the auto-mounter */
 

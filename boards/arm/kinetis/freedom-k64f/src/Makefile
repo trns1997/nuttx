@@ -67,4 +67,8 @@ ifeq ($(CONFIG_BOARDCTL_UNIQUEID),y)
 CSRCS += k64_uid.c
 endif
 
+ifeq ($(CONFIG_RGBLED),y)
+  CSRCS += k64_rgbled.c
+endif
+
 include $(TOPDIR)/boards/Board.mk
